@@ -1,20 +1,7 @@
-import 'package:flutter/material.dart';
-import 'mood_service.dart';
+import '../../shared/models/user_model.dart';
 
-class MoodViewModel extends ChangeNotifier {
-  final MoodService service;
+class MoodViewModel {
+  final UserModel user;
 
-  MoodViewModel({required this.service});
-
-  bool loading = false;
-
-  Future<void> selectMood(String mood) async {
-    loading = true;
-    notifyListeners();
-
-    await service.registerMood(mood);
-
-    loading = false;
-    notifyListeners();
-  }
+  MoodViewModel({required this.user});
 }

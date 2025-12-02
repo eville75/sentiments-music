@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
+import 'settings_view_model.dart';
 import '../../design_system/theme/app_theme.dart';
 import '../../design_system/theme/app_typography.dart';
-import '../login/login_service.dart';
-import 'settings_view_model.dart';
 
 class SettingsView extends StatelessWidget {
   final SettingsViewModel viewModel;
@@ -11,38 +10,29 @@ class SettingsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final user = LoginService.currentUser;
+    final user = viewModel.user;
 
     return Container(
       decoration: AppTheme.backgroundGradient,
       child: Scaffold(
         backgroundColor: Colors.transparent,
         appBar: AppBar(
-          elevation: 0,
-          backgroundColor: Colors.transparent,
           title: Text("Configurações", style: AppTypography.h2),
+          backgroundColor: Colors.transparent,
+          elevation: 0,
         ),
-        body: Center(
+        body: Padding(
+          padding: const EdgeInsets.all(24),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               CircleAvatar(
-                radius: 50,
-                backgroundImage: NetworkImage(
-                  user?.avatarUrl ??
-                      "https://ui-avatars.com/api/?name=U&background=5A86FF&color=fff",
-                ),
+                radius: 40,
+                backgroundImage: NetworkImage(user.avatarUrl ?? ""),
               ),
-              const SizedBox(height: 16),
-              Text(
-                user?.name ?? "Usuário",
-                style: AppTypography.h1,
-              ),
+              const SizedBox(height: 12),
+              Text(user.name, style: AppTypography.h2),
               const SizedBox(height: 4),
-              Text(
-                user?.email ?? "",
-                style: AppTypography.body,
-              ),
+              Text(user.email, style: AppTypography.body),
             ],
           ),
         ),

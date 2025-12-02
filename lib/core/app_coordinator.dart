@@ -13,7 +13,8 @@ class AppCoordinator {
         return MaterialPageRoute(builder: (_) => LoginFactory.create());
 
       case AppRoutes.mood:
-        return MaterialPageRoute(builder: (_) => MoodFactory.create());
+        final user = settings.arguments as UserModel;
+        return MaterialPageRoute(builder: (_) => MoodFactory.create(user));
 
       case AppRoutes.home:
         final mood = settings.arguments as String;

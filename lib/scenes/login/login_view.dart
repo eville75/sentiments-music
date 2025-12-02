@@ -3,9 +3,9 @@ import '../../design_system/theme/app_theme.dart';
 import '../../design_system/theme/app_typography.dart';
 import '../../design_system/theme/app_spacing.dart';
 import '../../design_system/theme/app_colors.dart';
+import '../mood/mood_factory.dart';
 import 'login_view_model.dart';
 import 'login_service.dart';
-import '../mood/mood_factory.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -16,6 +16,12 @@ class LoginView extends StatefulWidget {
 
 class _LoginViewState extends State<LoginView> {
   late final LoginViewModel viewModel;
+
+  bool isLogin = true;
+
+  final nameController = TextEditingController();
+  final emailController = TextEditingController();
+  final passController = TextEditingController();
 
   @override
   void initState() {
@@ -30,84 +36,132 @@ class _LoginViewState extends State<LoginView> {
         decoration: AppTheme.backgroundGradient,
         padding: const EdgeInsets.all(AppSpacing.lg),
         child: Center(
-          child: AnimatedBuilder(
-            animation: viewModel,
-            builder: (_, __) {
-              return Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text("Mood Music", style: AppTypography.h1),
-                  const SizedBox(height: 40),
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                Text(
+                  isLogin ? "Entrar" : "Criar conta",
+                  style: AppTypography.h1,
+                ),
+                const SizedBox(height: 32),
 
-                  _loginButton(
-                    label: "Entrar com Google",
-                    icon: Icons.g_mobiledata,
-                    color: AppColors.primary,
-                    onTap: () async {
-                      final user = await viewModel.loginGoogle();
-                      if (user != null && context.mounted) {
+                // CAMPO NOME (somente no cadastro)
+                if (!isLogin)
+                  _textField("Nome completo", controller: nameController),
+
+                if (!isLogin) const SizedBox(height: 16),
+
+                // CAMPO EMAIL
+                _textField("E-mail", controller: emailController),
+
+                const SizedBox(height: 16),
+
+                // CAMPO SENHA
+                _textField("Senha", controller: passController, obscure: true),
+
+                const SizedBox(height: 32),
+
+                _button(
+                  text: isLogin ? "Entrar" : "Cadastrar",
+                  onTap: () async {
+                    if (isLogin) {
+                      final user = await viewModel.login(
+                        emailController.text,
+                        passController.text,
+                      );
+
+                      if (user != null && mounted) {
                         Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
-                            builder: (_) => MoodFactory.create(),
+                            builder: (_) => MoodFactory.create(user),
                           ),
                         );
                       }
-                    },
+                    } else {
+                      final user = await viewModel.register(
+                        nameController.text,
+                        emailController.text,
+                        passController.text,
+                      );
+
+                      if (user != null && mounted) {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => MoodFactory.create(user),
+                          ),
+                        );
+                      }
+                    }
+                  },
+                ),
+
+                const SizedBox(height: 20),
+
+                GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      isLogin = !isLogin;
+                    });
+                  },
+                  child: Text(
+                    isLogin ? "Criar uma conta" : "Já tenho uma conta",
+                    style: const TextStyle(
+                      color: Colors.blueAccent,
+                      fontSize: 16,
+                      decoration: TextDecoration.underline,
+                    ),
                   ),
-
-                  const SizedBox(height: 16),
-
-                  _loginButton(
-                    label: "Entrar com Apple",
-                    icon: Icons.apple,
-                    color: Colors.white,
-                    onTap: () async {
-                      final user = await viewModel.loginApple();
-                      if (user != null && context.mounted) {
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => MoodFactory.create(),
-                          ),
-                        );
-                      }
-                    },
-                  )
-                ],
-              );
-            },
+                )
+              ],
+            ),
           ),
         ),
       ),
     );
   }
 
-  Widget _loginButton({
-    required String label,
-    required IconData icon,
-    required Color color,
-    required VoidCallback onTap,
+  Widget _textField(
+    String label, {
+    required TextEditingController controller,
+    bool obscure = false,
   }) {
+    return TextField(
+      controller: controller,
+      obscureText: obscure,
+      style: const TextStyle(color: Colors.white),
+      decoration: InputDecoration(
+        hintText: label,
+        hintStyle: const TextStyle(color: Colors.white54),
+        filled: true,
+        fillColor: Colors.white.withOpacity(0.05),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: Colors.white24),
+        ),
+      ),
+    );
+  }
+
+  Widget _button({required String text, required VoidCallback onTap}) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.all(AppSpacing.md),
+        padding: const EdgeInsets.symmetric(vertical: 16),
+        width: double.infinity,
         decoration: BoxDecoration(
-          color: AppColors.glassEffect,
+          color: AppColors.primary,
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: AppColors.glassBorder),
         ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(icon, color: color),
-            const SizedBox(width: 12),
-            Text(
-              label,
-              style: AppTypography.body.copyWith(color: AppColors.text),
+        child: Center(
+          child: Text(
+            text,
+            style: AppTypography.body.copyWith(
+              fontSize: 18,
+              color: Colors.white,
             ),
-          ],
+          ),
         ),
       ),
     );

@@ -5,6 +5,7 @@ import '../../design_system/theme/app_theme.dart';
 import '../../design_system/widgets/mood_button.dart';
 import 'mood_view_model.dart';
 import '../home/home_factory.dart';
+import '../settings/settings_factory.dart';
 
 class MoodView extends StatelessWidget {
   final MoodViewModel viewModel;
@@ -23,7 +24,25 @@ class MoodView extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text("Como você se sente agora?", style: AppTypography.h1),
+                // ---------- TOPO COM CONFIGURAÇÕES ----------
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text("Como você se sente agora?", style: AppTypography.h1),
+                    IconButton(
+                      icon: const Icon(Icons.settings, color: Colors.white),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => SettingsFactory.create(viewModel.user),
+                          ),
+                        );
+                      },
+                    ),
+                  ],
+                ),
+
                 const SizedBox(height: AppSpacing.sm),
                 Text(
                   "Toque em um sentimento para encontrar a playlist",
@@ -32,82 +51,46 @@ class MoodView extends StatelessWidget {
 
                 const SizedBox(height: AppSpacing.xl),
 
-                // Sentimentos Positivos
+                // ------------ POSITIVOS ------------
                 Text("Sentimentos Positivos", style: AppTypography.h2),
                 const SizedBox(height: AppSpacing.sm),
                 Wrap(
                   spacing: 12,
                   runSpacing: 12,
                   children: [
-                    MoodButton(
-                      label: "Feliz",
-                      type: MoodType.positive,
-                      onTap: () => _goToHome(context, "Feliz"),
-                    ),
-                    MoodButton(
-                      label: "Motivado",
-                      type: MoodType.positive,
-                      onTap: () => _goToHome(context, "Motivado"),
-                    ),
-                    MoodButton(
-                      label: "Alegre",
-                      type: MoodType.positive,
-                      onTap: () => _goToHome(context, "Alegre"),
-                    ),
+                    MoodButton(label: "Feliz", type: MoodType.positive, onTap: () => _go(context, "Feliz")),
+                    MoodButton(label: "Motivado", type: MoodType.positive, onTap: () => _go(context, "Motivado")),
+                    MoodButton(label: "Alegre", type: MoodType.positive, onTap: () => _go(context, "Alegre")),
                   ],
                 ),
 
                 const SizedBox(height: AppSpacing.lg),
 
-                // Sentimentos Negativos
+                // ------------ NEGATIVOS ------------
                 Text("Sentimentos Negativos", style: AppTypography.h2),
                 const SizedBox(height: AppSpacing.sm),
                 Wrap(
                   spacing: 12,
                   runSpacing: 12,
                   children: [
-                    MoodButton(
-                      label: "Triste",
-                      type: MoodType.negative,
-                      onTap: () => _goToHome(context, "Triste"),
-                    ),
-                    MoodButton(
-                      label: "Ansioso",
-                      type: MoodType.negative,
-                      onTap: () => _goToHome(context, "Ansioso"),
-                    ),
-                    MoodButton(
-                      label: "Cansado",
-                      type: MoodType.negative,
-                      onTap: () => _goToHome(context, "Cansado"),
-                    ),
+                    MoodButton(label: "Triste", type: MoodType.negative, onTap: () => _go(context, "Triste")),
+                    MoodButton(label: "Ansioso", type: MoodType.negative, onTap: () => _go(context, "Ansioso")),
+                    MoodButton(label: "Cansado", type: MoodType.negative, onTap: () => _go(context, "Cansado")),
                   ],
                 ),
 
                 const SizedBox(height: AppSpacing.lg),
 
-                // Sentimentos Neutros
+                // ------------ NEUTROS ------------
                 Text("Sentimentos Neutros", style: AppTypography.h2),
                 const SizedBox(height: AppSpacing.sm),
                 Wrap(
                   spacing: 12,
                   runSpacing: 12,
                   children: [
-                    MoodButton(
-                      label: "Calmo",
-                      type: MoodType.neutral,
-                      onTap: () => _goToHome(context, "Calmo"),
-                    ),
-                    MoodButton(
-                      label: "Sereno",
-                      type: MoodType.neutral,
-                      onTap: () => _goToHome(context, "Sereno"),
-                    ),
-                    MoodButton(
-                      label: "Neutro",
-                      type: MoodType.neutral,
-                      onTap: () => _goToHome(context, "Neutro"),
-                    ),
+                    MoodButton(label: "Calmo", type: MoodType.neutral, onTap: () => _go(context, "Calmo")),
+                    MoodButton(label: "Sereno", type: MoodType.neutral, onTap: () => _go(context, "Sereno")),
+                    MoodButton(label: "Neutro", type: MoodType.neutral, onTap: () => _go(context, "Neutro")),
                   ],
                 ),
               ],
@@ -118,12 +101,10 @@ class MoodView extends StatelessWidget {
     );
   }
 
-  void _goToHome(BuildContext context, String mood) {
+  void _go(BuildContext context, String mood) {
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (_) => HomeFactory.create(mood),
-      ),
+      MaterialPageRoute(builder: (_) => HomeFactory.create(mood)),
     );
   }
 }

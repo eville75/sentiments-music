@@ -1,34 +1,31 @@
 import '../../shared/models/user_model.dart';
 
 class LoginService {
-  // Usuário atual da sessão
-  static UserModel? currentUser;
+  Future<UserModel?> login(String email, String password) async {
+    await Future.delayed(const Duration(milliseconds: 500));
 
-  Future<UserModel?> loginGoogle() async {
-    await Future.delayed(const Duration(seconds: 1));
-
-    final user = UserModel(
-      id: "1",
-      name: "Sapatinha",
-      email: "sapatinha@gmail.com",
-      avatarUrl: "https://ui-avatars.com/api/?name=S&background=5A86FF&color=fff",
-    );
-
-    currentUser = user; // <- ESSENCIAL
-    return user;
+    // Simulação apenas
+    if (email == "teste@gmail.com" && password == "123456") {
+      return UserModel(
+        id: "001",
+        name: "Sapatinha",
+        email: email,
+        avatarUrl:
+            "https://ui-avatars.com/api/?name=S&background=5A86FF&color=fff",
+      );
+    }
+    return null;
   }
 
-  Future<UserModel?> loginApple() async {
-    await Future.delayed(const Duration(seconds: 1));
+  Future<UserModel> register(String name, String email, String password) async {
+    await Future.delayed(const Duration(milliseconds: 500));
 
-    final user = UserModel(
-      id: "2",
-      name: "Apple User",
-      email: "appleuser@gmail.com",
-      avatarUrl: "https://ui-avatars.com/api/?name=A&background=ffffff&color=000",
+    return UserModel(
+      id: DateTime.now().millisecondsSinceEpoch.toString(),
+      name: name,
+      email: email,
+      avatarUrl:
+          "https://ui-avatars.com/api/?name=${name[0]}&background=5A86FF&color=fff",
     );
-
-    currentUser = user; // <- ESSENCIAL
-    return user;
   }
 }

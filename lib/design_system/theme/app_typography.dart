@@ -29,4 +29,6 @@ class AppTypography {
     fontWeight: FontWeight.w500,
     color: Colors.white,
   );
+
+  static var h3;
 }
