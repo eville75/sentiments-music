@@ -8,34 +8,42 @@ class HomeViewModel extends ChangeNotifier {
   HomeViewModel({required this.service});
 
   bool isLoading = false;
+  bool isLoadingMore = false;
   String? errorMessage;
   List<PlaylistModel> playlists = [];
+  String? currentMood;
 
-  Future<void> loadPlaylists(
-    String mood, {
-    bool loadMore = false,
-  }) async {
-    if (loadMore && isLoading) return;
-
+  Future<void> loadPlaylists(String mood) async {
+    currentMood = mood;
     isLoading = true;
+    errorMessage = null;
     notifyListeners();
 
     try {
-      final newPlaylists = await service.getPlaylistsByMood(
-        mood,
-        loadMore: loadMore,
-      );
-
-      if (loadMore) {
-        playlists.addAll(newPlaylists);
-      } else {
-        playlists = newPlaylists;
-      }
+      playlists = await service.getPlaylistsByMood(mood);
     } catch (e) {
       errorMessage = "Erro ao carregar playlists.";
     } finally {
       isLoading = false;
       notifyListeners();
     }
+  }
+
+  Future<void> loadMore() async {
+    if (isLoadingMore || currentMood == null) return;
+
+    isLoadingMore = true;
+    notifyListeners();
+
+    try {
+      final more = await service.getPlaylistsByMood(
+        currentMood!,
+        loadMore: true,
+      );
+      playlists.addAll(more);
+    } catch (_) {} 
+
+    isLoadingMore = false;
+    notifyListeners();
   }
 }
