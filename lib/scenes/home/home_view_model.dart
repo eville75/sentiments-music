@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../shared/models/playlist_model.dart';
 import '../../shared/services/youtube_service.dart';
-import '../../shared/errors/app_error.dart';
 
 class HomeViewModel extends ChangeNotifier {
   final YoutubeService service;
@@ -12,17 +11,28 @@ class HomeViewModel extends ChangeNotifier {
   String? errorMessage;
   List<PlaylistModel> playlists = [];
 
-  Future<void> loadPlaylists(String mood) async {
+  Future<void> loadPlaylists(
+    String mood, {
+    bool loadMore = false,
+  }) async {
+    if (loadMore && isLoading) return;
+
     isLoading = true;
-    errorMessage = null;
     notifyListeners();
 
     try {
-      playlists = await service.getPlaylistsByMood(mood);
-    } on AppError catch (e) {
-      errorMessage = e.message;
+      final newPlaylists = await service.getPlaylistsByMood(
+        mood,
+        loadMore: loadMore,
+      );
+
+      if (loadMore) {
+        playlists.addAll(newPlaylists);
+      } else {
+        playlists = newPlaylists;
+      }
     } catch (e) {
-      errorMessage = "Erro inesperado.";
+      errorMessage = "Erro ao carregar playlists.";
     } finally {
       isLoading = false;
       notifyListeners();

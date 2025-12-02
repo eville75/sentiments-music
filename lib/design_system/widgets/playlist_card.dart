@@ -28,19 +28,16 @@ class PlaylistCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // Imagem da playlist
             ClipRRect(
               borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
               child: AspectRatio(
-                aspectRatio: 1, // quadrado igual ao seu protótipo
+                aspectRatio: 1,
                 child: Image.network(
                   thumbnailUrl,
                   fit: BoxFit.cover,
                 ),
               ),
             ),
-
-            // Título
             Padding(
               padding: const EdgeInsets.all(AppSpacing.sm),
               child: Text(

@@ -4,29 +4,63 @@ import '../models/playlist_model.dart';
 class YoutubeService {
   final Dio _dio = Dio();
 
-  YoutubeService();
+  // SUA API KEY
+  final String apiKey = "AIzaSyCHC1GIUlBhgalz3K1Zm_jPMW88oxU6I08";
 
-  Future<List<PlaylistModel>> getPlaylistsByMood(String mood) async {
-    await Future.delayed(const Duration(milliseconds: 600));
+  String? nextPageToken;
 
-    final data = [
-      {
-        "id": "1",
-        "title": "$mood • Playlist 1",
-        "thumbnail": "https://img.youtube.com/vi/5qap5aO4i9A/hqdefault.jpg"
-      },
-      {
-        "id": "2",
-        "title": "$mood • Playlist 2",
-        "thumbnail": "https://img.youtube.com/vi/jfKfPfyJRdk/hqdefault.jpg"
-      },
-      {
-        "id": "3",
-        "title": "$mood • Playlist 3",
-        "thumbnail": "https://img.youtube.com/vi/DWcJFNfaw9c/hqdefault.jpg"
-      },
-    ];
+  Future<List<PlaylistModel>> getPlaylistsByMood(
+    String mood, {
+    bool loadMore = false,
+  }) async {
+    try {
+      if (!loadMore) {
+        nextPageToken = null;
+      }
 
-    return data.map((e) => PlaylistModel.fromMap(e)).toList();
+      final response = await _dio.get(
+        "https://www.googleapis.com/youtube/v3/search",
+        queryParameters: {
+          "part": "snippet",
+          "q": "$mood music playlist",
+          "type": "video",
+          "maxResults": 12,
+          "key": apiKey,
+          if (nextPageToken != null) "pageToken": nextPageToken,
+        },
+      );
+
+      // Atualiza a próxima página
+      nextPageToken = response.data["nextPageToken"];
+
+      final items = response.data["items"] as List;
+
+      // Converte e filtra somente vídeos válidos
+      return items.map((item) {
+        final snippet = item["snippet"];
+        final videoId = item["id"]?["videoId"];
+
+        if (videoId == null) return null;
+
+        final thumbnails = snippet["thumbnails"];
+
+        final thumb = thumbnails["high"]?["url"] ??
+            thumbnails["medium"]?["url"] ??
+            thumbnails["default"]?["url"] ??
+            "";
+
+        return PlaylistModel(
+          id: videoId,
+          title: snippet["title"] ?? "Sem título",
+          thumbnailUrl: thumb,
+        );
+      })
+      .where((e) => e != null)
+      .cast<PlaylistModel>()
+      .toList();
+    } catch (e) {
+      print("Erro YouTube API: $e");
+      return [];
+    }
   }
 }
