@@ -25,22 +25,16 @@ class SettingsView extends StatelessWidget {
         body: ListView(
           padding: const EdgeInsets.all(24),
           children: [
+            // ----------- SEM FOTO -----------
             Column(
               children: [
-                CircleAvatar(
-                  radius: 45,
-                  backgroundImage: NetworkImage(
-                    user.avatarUrl.isEmpty
-                        ? "https://via.placeholder.com/150"
-                        : user.avatarUrl,
-                  ),
-                ),
                 const SizedBox(height: 12),
                 Text(user.name, style: AppTypography.h2),
                 const SizedBox(height: 4),
                 Text(user.email, style: AppTypography.body),
               ],
             ),
+
             const SizedBox(height: 32),
 
             _settingsTile(
@@ -79,15 +73,30 @@ class SettingsView extends StatelessWidget {
 
             const SizedBox(height: 16),
 
+            // ----------- SOBRE O APP SEM LICENSES -----------
             _settingsTile(
               icon: Icons.info_outline,
               label: "Sobre o app",
               onTap: () {
-                showAboutDialog(
+                showDialog(
                   context: context,
-                  applicationName: "Mood Music",
-                  applicationVersion: "1.0.0",
-                  applicationLegalese: "Desenvolvido por Sapatinha 💙",
+                  builder: (_) => AlertDialog(
+                    backgroundColor: AppColors.card,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    title: Text("Mood Music", style: AppTypography.h2),
+                    content: Text(
+                      "App desenvolvido pela Eville 💙",
+                      style: AppTypography.body,
+                    ),
+                    actions: [
+                      TextButton(
+                        child: const Text("Fechar"),
+                        onPressed: () => Navigator.pop(context),
+                      ),
+                    ],
+                  ),
                 );
               },
             ),

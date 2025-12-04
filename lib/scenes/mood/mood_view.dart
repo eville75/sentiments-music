@@ -14,6 +14,8 @@ class MoodView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final feelings = viewModel.allSentiments;
+
     return Container(
       decoration: AppTheme.backgroundGradient,
       child: Scaffold(
@@ -24,7 +26,7 @@ class MoodView extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Header com Configurações
+                // -------- HEADER --------
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -35,8 +37,6 @@ class MoodView extends StatelessWidget {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            // ❌ ANTIGO: SettingsFactory.create(viewModel.user)
-                            // ✔ NOVO:
                             builder: (_) => SettingsFactory.create(),
                           ),
                         );
@@ -53,47 +53,32 @@ class MoodView extends StatelessWidget {
 
                 const SizedBox(height: AppSpacing.xl),
 
-                // POSITIVOS
-                Text("Sentimentos Positivos", style: AppTypography.h2),
-                const SizedBox(height: AppSpacing.sm),
-                Wrap(
-                  spacing: 12,
-                  runSpacing: 12,
-                  children: [
-                    MoodButton(label: "Feliz", type: MoodType.positive, onTap: () => _go(context, "Feliz")),
-                    MoodButton(label: "Motivado", type: MoodType.positive, onTap: () => _go(context, "Motivado")),
-                    MoodButton(label: "Alegre", type: MoodType.positive, onTap: () => _go(context, "Alegre")),
-                  ],
-                ),
+                Expanded(
+                  child: ListView(
+                    children: feelings.keys.map((category) {
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(category, style: AppTypography.h2),
+                          const SizedBox(height: AppSpacing.sm),
 
-                const SizedBox(height: AppSpacing.lg),
+                          Wrap(
+                            spacing: 12,
+                            runSpacing: 12,
+                            children: feelings[category]!.map((sentiment) {
+                              return MoodButton(
+                                label: sentiment,
+                                type: viewModel.resolveType(category),
+                                onTap: () => _go(context, sentiment),
+                              );
+                            }).toList(),
+                          ),
 
-                // NEGATIVOS
-                Text("Sentimentos Negativos", style: AppTypography.h2),
-                const SizedBox(height: AppSpacing.sm),
-                Wrap(
-                  spacing: 12,
-                  runSpacing: 12,
-                  children: [
-                    MoodButton(label: "Triste", type: MoodType.negative, onTap: () => _go(context, "Triste")),
-                    MoodButton(label: "Ansioso", type: MoodType.negative, onTap: () => _go(context, "Ansioso")),
-                    MoodButton(label: "Cansado", type: MoodType.negative, onTap: () => _go(context, "Cansado")),
-                  ],
-                ),
-
-                const SizedBox(height: AppSpacing.lg),
-
-                // NEUTROS
-                Text("Sentimentos Neutros", style: AppTypography.h2),
-                const SizedBox(height: AppSpacing.sm),
-                Wrap(
-                  spacing: 12,
-                  runSpacing: 12,
-                  children: [
-                    MoodButton(label: "Calmo", type: MoodType.neutral, onTap: () => _go(context, "Calmo")),
-                    MoodButton(label: "Sereno", type: MoodType.neutral, onTap: () => _go(context, "Sereno")),
-                    MoodButton(label: "Neutro", type: MoodType.neutral, onTap: () => _go(context, "Neutro")),
-                  ],
+                          const SizedBox(height: AppSpacing.lg),
+                        ],
+                      );
+                    }).toList(),
+                  ),
                 ),
               ],
             ),
