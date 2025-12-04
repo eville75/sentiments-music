@@ -1,6 +1,6 @@
-# 🌙 Mood Music – Encontre a playlist perfeita para o seu momento
+# 🌙 Encontre a playlist perfeita para o seu momento
 
-O **Mood Music** é um aplicativo mobile desenvolvido em Flutter que recomenda playlists com base no humor do usuário.  
+Um aplicativo mobile desenvolvido em Flutter que recomenda playlists com base no humor do usuário.  
 A ideia é simples: **você seleciona como se sente e o app encontra playlists que combinam com o seu estado emocional.**
 
 ---
