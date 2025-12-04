@@ -5,7 +5,7 @@ import '../../shared/models/user_model.dart';
 
 class MoodFactory {
   static Widget create(UserModel user) {
-    final viewModel = MoodViewModel();
+    final viewModel = MoodViewModel(user: user);
     return MoodView(viewModel: viewModel);
   }
 }

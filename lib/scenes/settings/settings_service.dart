@@ -2,12 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:mibilleii/shared/models/user_model.dart';
 
 class SettingsService {
-  UserModel _user = const UserModel(
-    id: "001",
-    name: "Usuário",
-    email: "email@email.com",
-    avatarUrl: "",
-  );
+  late UserModel _user;
+
+  SettingsService({required UserModel user}) {
+    _user = user;
+  }
 
   UserModel getUser() => _user;
 

@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
-import '../../design_system/widgets/mood_button.dart'; // MoodType
+import '../../shared/models/user_model.dart';
+import '../../design_system/widgets/mood_button.dart';
 
 class MoodViewModel extends ChangeNotifier {
-  // Lista completa de sentimentos
+  final UserModel user;
+
+  MoodViewModel({required this.user});
+
   final Map<String, List<String>> allSentiments = {
     'Sentimentos Positivos': [
       'Alegria','Amor','Esperança','Gratidão','Inspiração','Entusiasmo',

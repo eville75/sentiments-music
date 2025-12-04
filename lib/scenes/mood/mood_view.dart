@@ -37,7 +37,9 @@ class MoodView extends StatelessWidget {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (_) => SettingsFactory.create(),
+                            builder: (_) => SettingsFactory.create(
+                              viewModel.user, // ✅ agora envia o usuário real
+                            ),
                           ),
                         );
                       },
